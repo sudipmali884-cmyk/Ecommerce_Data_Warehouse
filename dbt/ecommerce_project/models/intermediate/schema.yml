@@ -1,0 +1,291 @@
+#version: 2
+#models:
+#  - name: int_orders
+#    columns:
+#      - name: order_id
+#        tests:
+#          - not_null
+#          - unique
+#
+#      - name: customer_id
+#        tests:
+#
+#          - not_null
+version: 2
+
+models:
+
+  # ============================================================
+  # INT ORDERS
+  # ============================================================
+
+  - name: int_orders
+
+    description: >
+      Intermediate order model combining orders with customer
+      information.
+
+    columns:
+
+      - name: order_id
+        description: "Unique order identifier."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "Customer associated with the order."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+      - name: order_date
+        description: "Date when the order was placed."
+        tests:
+          - not_null
+
+      - name: order_status
+        tests:
+          - not_null
+
+      - name: customer_status
+        tests:
+          - accepted_values:
+              values:
+                - Active
+                - Inactive
+
+
+  # ============================================================
+  # INT ORDER ITEMS
+  # ============================================================
+
+  - name: int_order_items
+
+    description: >
+      Intermediate order item model combining order items
+      with product information and profit calculations.
+
+    columns:
+
+      - name: order_item_id
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+
+
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+      - name: quantity
+        tests:
+          - not_null
+
+      - name: unit_price
+        tests:
+          - not_null
+
+      - name: line_total
+        tests:
+          - not_null
+
+      - name: estimated_profit
+        description: >
+          Estimated product profit based on selling price
+          and cost price.
+
+
+  # ============================================================
+  # INT PAYMENTS
+  # ============================================================
+
+  - name: int_payments
+
+    description: >
+      Intermediate payment model combining payment and
+      order information.
+
+    columns:
+
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+      - name: payment_status
+        tests:
+          - not_null
+
+      - name: payment_amount
+        tests:
+          - not_null
+
+      - name: currency
+        tests:
+          - accepted_values:
+              values:
+                - INR
+
+
+  # ============================================================
+  # INT REVIEWS
+  # ============================================================
+
+  - name: int_reviews
+
+    description: >
+      Intermediate customer product review model.
+
+    columns:
+
+      - name: review_id
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+
+
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+      - name: rating
+        tests:
+          - not_null
+
+      - name: verified_purchase
+        tests:
+          - not_null
+
+
+  # ============================================================
+  # INT RETURNS
+  # ============================================================
+
+  - name: int_returns
+
+    description: >
+      Intermediate returns model combining returns,
+      orders and product information.
+
+    columns:
+
+      - name: return_id
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
+
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+
+
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+      - name: return_quantity
+        tests:
+          - not_null
+
+      - name: refund_amount
+        tests:
+          - not_null
+
+
+  # ============================================================
+  # INT INVENTORY
+  # ============================================================
+
+  - name: int_inventory
+
+    description: >
+      Intermediate inventory model combining inventory
+      and product information.
+
+    columns:
+
+      - name: inventory_id
+        tests:
+          - not_null
+          - unique
+
+      - name: product_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
+
+      - name: warehouse_id
+        tests:
+          - not_null
+
+      - name: stock_quantity
+        tests:
+          - not_null
+
+      - name: available_quantity
+        tests:
+          - not_null
+
+      - name: reorder_required
+        tests:
+          - not_null

@@ -1,0 +1,272 @@
+version: 2
+sources:
+  - name: raw
+    database: ecommercee_db
+    schema: raw
+
+    tables:
+      - name: customers
+      - name: products
+      - name: orders
+      - name: order_items
+      - name: payments
+      - name: reviews
+      - name: returns
+      - name: inventory
+
+
+models:
+
+  - name: stg_customers
+
+    description: >
+      Cleaned and deduplicated customer data from the raw
+      e-commerce customer source.
+
+    columns:
+
+      - name: customer_id
+        description: "Unique customer identifier."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: first_name
+
+        description: "Customer first name."
+        data_tests:
+          - not_null
+
+      - name: last_name
+        description: "Customer last name."
+
+      - name: gender
+        description: "Customer gender."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Male
+                  - Female
+                  - Other
+
+      - name: date_of_birth
+        description: "Customer date of birth."
+
+      - name: phone_number
+        description: "Validated customer phone number."
+
+      - name: email
+        description: "Validated and lowercase customer email."
+
+      - name: address
+        description: "Customer address."
+
+      - name: city
+        description: "Customer city."
+
+      - name: state
+        description: "Customer state."
+
+      - name: country
+        description: "Customer country."
+
+      - name: postal_code
+        description: "Customer postal code."
+
+      - name: registration_date
+        description: "Date when customer registered."
+
+      - name: customer_status
+        description: "Current customer status."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Active
+                  - Inactive
+                  - Unknown
+
+      - name: customer_segment
+        description: "Customer segment."
+
+      - name: created_at
+        description: "Record creation date."
+
+      - name: updated_at
+        description: "Record last update date."
+  - name: stg_products
+
+    description: >
+      Cleaned and deduplicated product data from the raw
+      e-commerce product source.
+
+    columns:
+
+      - name: product_id
+        description: "Unique product identifier."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: sku
+        description: "Unique product SKU."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_name
+        description: "Product name."
+
+      - name: category
+        description: "Product category."
+
+      - name: subcategory
+        description: "Product subcategory."
+
+      - name: brand
+        description: "Product brand."
+
+      - name: cost_price
+        description: "Product cost price."
+
+      - name: selling_price
+        description: "Product selling price."
+
+      - name: discount_percentage
+        description: "Product discount percentage."
+
+      - name: final_price
+        description: "Final product price after discount."
+
+      - name: rating
+        description: "Product rating between 0 and 5."
+
+      - name: product_status
+        description: "Current product status."
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Active
+                  - Inactive
+                  - Discontinued
+                  - Unknown
+
+      - name: created_at
+        description: "Product creation date."
+
+  - name: stg_order_items
+
+    description: >
+      Cleaned and deduplicated order item data from the raw
+      e-commerce order items source.
+
+    columns:
+
+      - name: order_item_id
+        description: "Unique order item identifier."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        description: "Order associated with the order item."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: product_id
+        description: "Product associated with the order item."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: quantity
+        description: "Quantity of products purchased."
+
+      - name: unit_price
+        description: "Price of one unit."
+
+      - name: discount_percentage
+        description: "Discount percentage applied to the item."
+
+      - name: gross_amount
+        description: "Gross amount before discount."
+
+      - name: discount_amount
+        description: "Discount amount."
+
+      - name: tax_amount
+        description: "Tax applied to the taxable amount."
+
+      - name: line_total
+        description: "Final line amount including tax."
+
+  - name: stg_reviews
+
+    description: >
+      Cleaned and deduplicated customer product reviews
+      from the raw e-commerce review source.
+
+    columns:
+
+      - name: review_id
+        description: "Unique review identifier."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        description: "Order associated with the review."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: customer_id
+        description: "Customer who submitted the review."
+
+      - name: product_id
+        description: "Product being reviewed."
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: rating
+        description: "Customer rating from 1 to 5."
+
+      - name: review_title
+        description: "Review title."
+
+      - name: review_text
+        description: "Review text."
+
+      - name: review_date
+        description: "Date on which the review was submitted."
+
+      - name: verified_purchase
+        description: "Whether the review represents a verified purchase."
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id

@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+
+# PyCharm
+.idea/
+
+# IDE
+.idea/
+.vscode/
+
+# dbt
+target/
+dbt_packages/
+logs/
+.partial_parse.msgpack
+
+# Snowflake credentials
+profiles.yml
+*.pem
+*.key
+
+# Power BI temporary files
+~$*.pbix
+
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Large/generated datasets
+data/
+
+# Power BI
+*.pbix
+*.pbit
