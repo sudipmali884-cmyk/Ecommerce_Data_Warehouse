@@ -94,31 +94,7 @@ The Power BI dashboard contains:
 6. Inventory Analysis
 
 
-## 📊 Power BI Dashboard
 
-### Executive Overview
-
-![Executive Overview](screenshots/01-executive-overview.png)
-
-### Customer Analysis
-
-![Customer Analysis](screenshots/02-customer-analysis.png)
-
-### Product & Sales Analysis
-
-![Product & Sales Analysis](screenshots/03-product-sales-analysis.png)
-
-### Order & Payment Analysis
-
-![Order & Payment Analysis](screenshots/04-order-payment-analysis.png)
-
-### Returns Analysis
-
-![Returns Analysis](screenshots/05-returns-analysis.png)
-
-### Inventory Analysis
-
-![Inventory Analysis](screenshots/06-inventory-analysis.png)
 
 ### Key KPIs
 
